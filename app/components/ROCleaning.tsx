@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -26,12 +25,16 @@ const CleaningEvaluation = () => {
     }
   }, []);
 
+  // Fix: Update the state type to match what we're storing
   const [tankDimensions, setTankDimensions] = useState({
     numberOfElements: 6,
     elementLength: 40, // inches
     elementDiameter: 4, // inches
     cleaningSolutionVolume: 0,
-    tankVolume: 0
+    tankVolume: 0,
+    // Add display fields for formatted strings
+    cleaningSolutionVolumeDisplay: '',
+    tankVolumeDisplay: ''
   });
 
   const calculateTankSize = () => {
@@ -41,10 +44,17 @@ const CleaningEvaluation = () => {
     const cleaningSolutionVolume = elementVolume * 5; // 5x element volume
     const tankVolume = cleaningSolutionVolume * 1.2; // 20% safety factor
 
+    // Convert to gallons but keep as numbers for state
+    const cleaningSolutionVolumeGallons = cleaningSolutionVolume / 231;
+    const tankVolumeGallons = tankVolume / 231;
+
     setTankDimensions(prev => ({
       ...prev,
-      cleaningSolutionVolume: (cleaningSolutionVolume / 231).toFixed(2), // Convert to gallons
-      tankVolume: (tankVolume / 231).toFixed(2) // Convert to gallons
+      cleaningSolutionVolume: cleaningSolutionVolumeGallons, // Keep as number
+      tankVolume: tankVolumeGallons, // Keep as number
+      // Store formatted strings separately
+      cleaningSolutionVolumeDisplay: cleaningSolutionVolumeGallons.toFixed(2),
+      tankVolumeDisplay: tankVolumeGallons.toFixed(2)
     }));
   };
 
@@ -117,8 +127,8 @@ const CleaningEvaluation = () => {
           <div className="bg-gray-50 p-4 rounded-lg">
             <h4 className="font-semibold mb-2">Results</h4>
             <div className="space-y-2">
-              <p>Cleaning Solution Volume: {tankDimensions.cleaningSolutionVolume} gallons</p>
-              <p>Recommended Tank Volume: {tankDimensions.tankVolume} gallons</p>
+              <p>Cleaning Solution Volume: {tankDimensions.cleaningSolutionVolumeDisplay} gallons</p>
+              <p>Recommended Tank Volume: {tankDimensions.tankVolumeDisplay} gallons</p>
             </div>
           </div>
         </div>
